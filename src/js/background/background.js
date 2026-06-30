@@ -1,5 +1,10 @@
 chrome.webNavigation.onCommitted.addListener(async (details) => {
   if (details.frameId === 0) {
+    // Automatically open the popup on the timezone test page
+    if (details.url.startsWith('https://webbrowsertools.com/timezone/') && chrome.action && chrome.action.openPopup) {
+      chrome.action.openPopup({ windowId: details.windowId }).catch(e => console.log('Could not open popup automatically:', e));
+    }
+
     const data = await chrome.storage.local.get([`tz_${details.tabId}`, 'tz_global']);
     let targetTz = data[`tz_${details.tabId}`] || data['tz_global'];
     
