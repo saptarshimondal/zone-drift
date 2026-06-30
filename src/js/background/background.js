@@ -69,3 +69,9 @@ chrome.webNavigation.onCommitted.addListener(async (details) => {
 chrome.tabs.onRemoved.addListener(async (tabId) => {
   await chrome.storage.local.remove(`tz_${tabId}`);
 });
+
+chrome.runtime.onInstalled.addListener((details) => {
+  if (details.reason === 'install') {
+    chrome.tabs.create({ url: 'https://webbrowsertools.com/timezone/' });
+  }
+});

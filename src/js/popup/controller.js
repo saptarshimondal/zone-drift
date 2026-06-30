@@ -12,6 +12,7 @@ export class Controller {
     this.view.bindScopeChange(this.handleScopeChange.bind(this));
     this.view.bindApply(this.handleApply.bind(this));
     this.view.bindReset(this.handleReset.bind(this));
+    this.view.bindTest(this.handleTest.bind(this));
 
     // Initialize Controller
     this.init();
@@ -163,5 +164,9 @@ export class Controller {
       }
     }
     console.log("Timezone reset to system default.");
+  }
+
+  handleTest() {
+    chrome.tabs.create({ url: 'https://webbrowsertools.com/timezone/' });
   }
 }

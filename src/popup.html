@@ -86,9 +86,14 @@
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
       <span id="apply-text">Apply & Reload Tab</span>
     </button>
-    <button id="btn-reset" class="w-full bg-transparent hover:bg-slate-800 border border-slate-700 text-slate-400 hover:text-white font-medium py-2 rounded-lg transition-colors text-sm">
-      Reset to System Default
-    </button>
+    <div class="flex items-center gap-2">
+      <button id="btn-reset" class="flex-1 bg-transparent hover:bg-slate-800 border border-slate-700 text-slate-400 hover:text-white font-medium py-2 rounded-lg transition-colors text-sm">
+        Reset to System Default
+      </button>
+      <button id="btn-test" title="Test Timezone Shift" class="flex-shrink-0 bg-transparent hover:bg-slate-800 border border-slate-700 text-slate-400 hover:text-cyan-400 font-medium p-2.5 rounded-lg transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+      </button>
+    </div>
   </footer>
   </div>
   <script type="module" src="js/popup/popup.js"></script>

@@ -5,6 +5,7 @@ export class View {
     this.btnApply = document.getElementById('btn-apply');
     this.applyText = document.getElementById('apply-text');
     this.btnReset = document.getElementById('btn-reset');
+    this.btnTest = document.getElementById('btn-test');
     this.timeReadout = document.getElementById('time-readout');
     this.zoneLabel = document.getElementById('zone-label');
     this.scopeTab = document.getElementById('scope-tab');
@@ -64,6 +65,10 @@ export class View {
 
   bindReset(handler) {
     this.btnReset.addEventListener('click', handler);
+  }
+
+  bindTest(handler) {
+    this.btnTest.addEventListener('click', handler);
   }
 
   renderClock(hours, minutes, seconds, timezone) {
