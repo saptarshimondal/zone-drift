@@ -13,7 +13,13 @@ chrome.webNavigation.onCommitted.addListener(async (details) => {
       targetTz = null;
     }
 
-    if (targetTz) {
+    const isHttp = details.url.startsWith('http://') || details.url.startsWith('https://');
+    const isStore = details.url.startsWith('https://chrome.google.com/webstore') || 
+                    details.url.startsWith('https://chromewebstore.google.com/') ||
+                    details.url.startsWith('https://addons.mozilla.org/');
+    const isValidUrl = isHttp && !isStore;
+
+    if (targetTz && isValidUrl) {
       // Set the extension icon badge
       chrome.action.setBadgeText({ text: 'ON', tabId: details.tabId });
       chrome.action.setBadgeBackgroundColor({ color: '#10b981', tabId: details.tabId });
