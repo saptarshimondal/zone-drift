@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "ZonneDrift",
+  "version": "0.0.1",
+  "description": "A boilerplate that works across modern browsers.",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  }
+}
