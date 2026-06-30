@@ -17,6 +17,31 @@ export class Controller {
     this.updateClock();
     this.startClock();
     this.view.renderScope(this.model.isGlobalScope);
+
+    // Initialize from storage
+    this.initSavedState();
+  }
+
+  async initSavedState() {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (!tab) return;
+    
+    const data = await chrome.storage.local.get([`tz_${tab.id}`, 'tz_global']);
+    const tabTz = data[`tz_${tab.id}`];
+    const globalTz = data['tz_global'];
+
+    if (tabTz) {
+      this.model.setTimezone(tabTz);
+      this.model.setGlobalScope(false);
+      this.view.setSearchValue(tabTz);
+    } else if (globalTz) {
+      this.model.setTimezone(globalTz);
+      this.model.setGlobalScope(true);
+      this.view.setSearchValue(globalTz);
+    }
+
+    this.updateClock();
+    this.view.renderScope(this.model.isGlobalScope);
   }
 
   updateClock() {
@@ -67,16 +92,53 @@ export class Controller {
     this.view.renderScope(this.model.isGlobalScope);
   }
 
-  handleApply() {
-    console.log(`Applying Timezone: ${this.model.selectedTimezone}, Scope: ${this.model.isGlobalScope ? 'Global' : 'Per Tab'}`);
-    // Add logic here to save settings to chrome.storage and update tabs
-    this.view.showApplySuccess();
+  async handleApply() {
+    if (!this.view.searchInput.value) {
+      this.view.showError("Please select a timezone");
+      return;
+    }
+
+    const tz = this.model.selectedTimezone;
+    console.log(`Applying Timezone: ${tz}, Scope: ${this.model.isGlobalScope ? 'Global' : 'Per Tab'}`);
+    
+    if (this.model.isGlobalScope) {
+      await chrome.storage.local.set({ 'tz_global': tz });
+      
+      // Optional: Clear all specific tab overrides so global takes full effect
+      const allData = await chrome.storage.local.get(null);
+      const keysToRemove = Object.keys(allData).filter(k => k.startsWith('tz_') && k !== 'tz_global');
+      if (keysToRemove.length > 0) {
+        await chrome.storage.local.remove(keysToRemove);
+      }
+
+      const allTabs = await chrome.tabs.query({ url: ['http://*/*', 'https://*/*'] });
+      this.view.showApplySuccess();
+      allTabs.forEach(t => chrome.tabs.reload(t.id));
+    } else {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (!tab) return;
+      await chrome.storage.local.set({ [`tz_${tab.id}`]: tz });
+      this.view.showApplySuccess();
+      chrome.tabs.reload(tab.id);
+    }
   }
 
-  handleReset() {
+  async handleReset() {
     this.model.resetTimezone();
     this.view.setSearchValue('');
     this.updateClock();
+    
+    if (this.model.isGlobalScope) {
+      await chrome.storage.local.remove('tz_global');
+      const allTabs = await chrome.tabs.query({ url: ['http://*/*', 'https://*/*'] });
+      allTabs.forEach(t => chrome.tabs.reload(t.id));
+    } else {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (tab) {
+        await chrome.storage.local.remove(`tz_${tab.id}`);
+        chrome.tabs.reload(tab.id);
+      }
+    }
     console.log("Timezone reset to system default.");
   }
 }

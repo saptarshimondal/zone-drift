@@ -105,9 +105,11 @@ export class View {
     if (isGlobalScope) {
       this.scopeGlobal.className = 'flex-1 py-1.5 text-xs font-medium bg-slate-600 text-white rounded-md shadow-sm transition-colors';
       this.scopeTab.className = 'flex-1 py-1.5 text-xs font-medium text-slate-400 hover:text-slate-200 transition-colors';
+      this.applyText.textContent = "Apply & Reload All Tabs";
     } else {
       this.scopeTab.className = 'flex-1 py-1.5 text-xs font-medium bg-slate-600 text-white rounded-md shadow-sm transition-colors';
       this.scopeGlobal.className = 'flex-1 py-1.5 text-xs font-medium text-slate-400 hover:text-slate-200 transition-colors';
+      this.applyText.textContent = "Apply & Reload Tab";
     }
   }
 
@@ -120,5 +122,16 @@ export class View {
       this.applyText.textContent = originalText;
       this.btnApply.classList.replace('bg-emerald-600', 'bg-cyan-600');
     }, 1500);
+  }
+
+  showError(message) {
+    const originalText = this.applyText.textContent;
+    this.applyText.textContent = message;
+    this.btnApply.classList.replace('bg-cyan-600', 'bg-red-600');
+    
+    setTimeout(() => {
+      this.applyText.textContent = originalText;
+      this.btnApply.classList.replace('bg-red-600', 'bg-cyan-600');
+    }, 2000);
   }
 }
