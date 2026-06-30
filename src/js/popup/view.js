@@ -17,6 +17,15 @@ export class View {
     this.statusContainer = document.getElementById('statusContainer');
     this.statusDot = document.getElementById('statusDot');
     this.statusIndicator = document.getElementById('statusIndicator');
+
+    // UI Wrappers
+    this.restrictedMessage = document.getElementById('restrictedMessage');
+    this.mainUi = document.getElementById('mainUi');
+  }
+
+  showRestrictedMessage() {
+    this.mainUi.classList.add('hidden');
+    this.restrictedMessage.classList.remove('hidden');
   }
 
   bindSearchFocus(handler) {

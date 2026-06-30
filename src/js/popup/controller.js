@@ -13,6 +13,24 @@ export class Controller {
     this.view.bindApply(this.handleApply.bind(this));
     this.view.bindReset(this.handleReset.bind(this));
 
+    // Initialize Controller
+    this.init();
+  }
+
+  async init() {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    
+    // Validate if the current page is a standard web page
+    if (tab && tab.url) {
+      const isHttp = tab.url.startsWith('http://') || tab.url.startsWith('https://');
+      const isStore = tab.url.startsWith('https://chrome.google.com/webstore') || tab.url.startsWith('https://addons.mozilla.org');
+      
+      if (!isHttp || isStore) {
+        this.view.showRestrictedMessage();
+        return; // Halt initialization for restricted pages
+      }
+    }
+
     // Initial Render
     this.updateClock();
     this.startClock();
@@ -20,12 +38,12 @@ export class Controller {
     this.view.setStatus(false);
 
     // Initialize from storage
-    this.initSavedState();
+    if (tab) {
+      this.initSavedState(tab);
+    }
   }
 
-  async initSavedState() {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    if (!tab) return;
+  async initSavedState(tab) {
     
     const data = await chrome.storage.local.get([`tz_${tab.id}`, 'tz_global']);
     const tabTz = data[`tz_${tab.id}`];

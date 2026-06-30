@@ -22,6 +22,19 @@
 </head>
 <body class="w-80 bg-slate-900 text-slate-100 p-5 border border-slate-800 m-0">
 
+  <!-- Restricted Page Message -->
+  <div id="restrictedMessage" class="hidden flex flex-col items-center justify-center text-center min-h-[280px] space-y-5">
+    <div class="relative flex items-center justify-center w-20 h-20 rounded-full bg-amber-500/10 border border-amber-500/20 shadow-[0_0_30px_-5px_rgba(245,158,11,0.2)]">
+      <svg class="w-10 h-10 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+    </div>
+    <div class="space-y-2">
+      <h2 class="text-xl font-bold text-white tracking-tight">Restricted Page</h2>
+      <p class="text-sm text-slate-400 leading-relaxed px-2">ZoneDrift can only be applied to standard web pages. It cannot run on browser settings, local files, or protected stores.</p>
+    </div>
+  </div>
+
+  <!-- Main UI -->
+  <div id="mainUi" class="flex flex-col">
   <header class="flex justify-between items-center mb-6">
     <div class="flex items-center gap-2">
       <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -77,7 +90,7 @@
       Reset to System Default
     </button>
   </footer>
-
+  </div>
   <script type="module" src="js/popup/popup.js"></script>
 </body>
 </html>
