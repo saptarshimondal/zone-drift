@@ -17,6 +17,7 @@ export class Controller {
     this.updateClock();
     this.startClock();
     this.view.renderScope(this.model.isGlobalScope);
+    this.view.setStatus(false);
 
     // Initialize from storage
     this.initSavedState();
@@ -40,6 +41,7 @@ export class Controller {
       this.view.setSearchValue(globalTz);
     }
 
+    this.view.setStatus(!!(tabTz || globalTz));
     this.updateClock();
     this.view.renderScope(this.model.isGlobalScope);
   }
@@ -113,12 +115,14 @@ export class Controller {
 
       const allTabs = await chrome.tabs.query({ url: ['http://*/*', 'https://*/*'] });
       this.view.showApplySuccess();
+      this.view.setStatus(true);
       allTabs.forEach(t => chrome.tabs.reload(t.id));
     } else {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
       if (!tab) return;
       await chrome.storage.local.set({ [`tz_${tab.id}`]: tz });
       this.view.showApplySuccess();
+      this.view.setStatus(true);
       chrome.tabs.reload(tab.id);
     }
   }
@@ -126,6 +130,7 @@ export class Controller {
   async handleReset() {
     this.model.resetTimezone();
     this.view.setSearchValue('');
+    this.view.setStatus(false);
     this.updateClock();
     
     if (this.model.isGlobalScope) {

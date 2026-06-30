@@ -9,6 +9,14 @@ export class View {
     this.zoneLabel = document.getElementById('zone-label');
     this.scopeTab = document.getElementById('scope-tab');
     this.scopeGlobal = document.getElementById('scope-global');
+    this.clockTime = document.getElementById('clockTime');
+    this.clockDate = document.getElementById('clockDate');
+    this.clockTz = document.getElementById('clockTz');
+    
+    // Status Indicator
+    this.statusContainer = document.getElementById('statusContainer');
+    this.statusDot = document.getElementById('statusDot');
+    this.statusIndicator = document.getElementById('statusIndicator');
   }
 
   bindSearchFocus(handler) {
@@ -133,5 +141,19 @@ export class View {
       this.applyText.textContent = originalText;
       this.btnApply.classList.replace('bg-red-600', 'bg-cyan-600');
     }, 2000);
+  }
+
+  setStatus(isActive) {
+    if (isActive) {
+      this.statusContainer.className = 'flex items-center gap-1.5 px-2 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full';
+      this.statusDot.className = 'w-2 h-2 bg-emerald-400 rounded-full animate-pulse';
+      this.statusIndicator.className = 'text-[10px] font-semibold text-emerald-400 uppercase tracking-wider';
+      this.statusIndicator.textContent = 'Active';
+    } else {
+      this.statusContainer.className = 'flex items-center gap-1.5 px-2 py-1 bg-red-500/10 border border-red-500/20 rounded-full';
+      this.statusDot.className = 'w-2 h-2 bg-red-400 rounded-full';
+      this.statusIndicator.className = 'text-[10px] font-semibold text-red-400 uppercase tracking-wider';
+      this.statusIndicator.textContent = 'Inactive';
+    }
   }
 }
