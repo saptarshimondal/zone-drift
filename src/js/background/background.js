@@ -4,6 +4,10 @@ chrome.webNavigation.onCommitted.addListener(async (details) => {
     const targetTz = data[`tz_${details.tabId}`] || data['tz_global'];
 
     if (targetTz) {
+      // Set the extension icon badge
+      chrome.action.setBadgeText({ text: 'ON', tabId: details.tabId });
+      chrome.action.setBadgeBackgroundColor({ color: '#10b981', tabId: details.tabId });
+
       chrome.scripting.executeScript({
         target: { tabId: details.tabId },
         world: "MAIN",
@@ -59,9 +63,33 @@ chrome.webNavigation.onCommitted.addListener(async (details) => {
           };
 
           window.Date = MockDate;
+
+          // Inject Visual Tab Modifications
+          const applyTitle = () => {
+            if (document.title && !document.title.startsWith(`[ZoneDrift: ${timezone}]`)) {
+              document.title = `[ZoneDrift: ${timezone}] ` + document.title.replace(/\[ZoneDrift: .*?\] /, '');
+            }
+          };
+
+          const setupObserver = () => {
+            applyTitle();
+            const target = document.querySelector('title') || document.head;
+            if (target) {
+              new MutationObserver(applyTitle).observe(target, { childList: true, characterData: true, subtree: true });
+            }
+          };
+
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', setupObserver);
+          } else {
+            setupObserver();
+          }
         },
         args: [targetTz]
       }).catch(err => console.error('ZoneDrift injection error:', err));
+    } else {
+      // Clear the extension icon badge
+      chrome.action.setBadgeText({ text: '', tabId: details.tabId });
     }
   }
 });
