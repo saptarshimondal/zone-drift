@@ -78,9 +78,13 @@ chrome.webNavigation.onCommitted.addListener(async (details) => {
 
           const setupObserver = () => {
             applyTitle();
-            const target = document.querySelector('title') || document.head;
-            if (target) {
-              new MutationObserver(applyTitle).observe(target, { childList: true, characterData: true, subtree: true });
+            // SPAs like GitHub (React Helmet/Turbo) completely destroy and replace the <title> node.
+            // We must observe the entire head tree to catch node replacements, not just the text inside a dying node.
+            const observer = new MutationObserver(applyTitle);
+            if (document.head) {
+              observer.observe(document.head, { childList: true, subtree: true, characterData: true });
+            } else {
+              observer.observe(document.documentElement, { childList: true, subtree: true, characterData: true });
             }
           };
 
