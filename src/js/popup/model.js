@@ -1,4 +1,4 @@
-import { timezones, aliases } from './data/timezones.js';
+import { timezones, aliases } from '../data/timezones.js';
 
 export class Model {
   constructor() {
