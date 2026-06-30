@@ -1,7 +1,12 @@
 chrome.webNavigation.onCommitted.addListener(async (details) => {
   if (details.frameId === 0) {
     const data = await chrome.storage.local.get([`tz_${details.tabId}`, 'tz_global']);
-    const targetTz = data[`tz_${details.tabId}`] || data['tz_global'];
+    let targetTz = data[`tz_${details.tabId}`] || data['tz_global'];
+    
+    // Respect explicit tab-level overrides that opt-out of global scope
+    if (data[`tz_${details.tabId}`] === 'SYSTEM') {
+      targetTz = null;
+    }
 
     if (targetTz) {
       // Set the extension icon badge

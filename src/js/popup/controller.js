@@ -45,12 +45,15 @@ export class Controller {
   }
 
   async initSavedState(tab) {
-    
     const data = await chrome.storage.local.get([`tz_${tab.id}`, 'tz_global']);
     const tabTz = data[`tz_${tab.id}`];
     const globalTz = data['tz_global'];
 
-    if (tabTz) {
+    if (tabTz === 'SYSTEM') {
+      this.model.resetTimezone();
+      this.model.setGlobalScope(false);
+      this.view.setSearchValue('');
+    } else if (tabTz) {
       this.model.setTimezone(tabTz);
       this.model.setGlobalScope(false);
       this.view.setSearchValue(tabTz);
@@ -60,7 +63,8 @@ export class Controller {
       this.view.setSearchValue(globalTz);
     }
 
-    this.view.setStatus(!!(tabTz || globalTz));
+    const isActive = (tabTz && tabTz !== 'SYSTEM') || (globalTz && tabTz !== 'SYSTEM');
+    this.view.setStatus(!!isActive);
     this.updateClock();
     this.view.renderScope(this.model.isGlobalScope);
   }
@@ -154,12 +158,25 @@ export class Controller {
     
     if (this.model.isGlobalScope) {
       await chrome.storage.local.remove('tz_global');
+      // Also remove all explicit SYSTEM overrides when global is removed
+      const allData = await chrome.storage.local.get(null);
+      const keysToRemove = Object.keys(allData).filter(k => k.startsWith('tz_') && allData[k] === 'SYSTEM');
+      if (keysToRemove.length > 0) {
+        await chrome.storage.local.remove(keysToRemove);
+      }
+      
       const allTabs = await chrome.tabs.query({ url: ['http://*/*', 'https://*/*'] });
       allTabs.forEach(t => chrome.tabs.reload(t.id));
     } else {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
       if (tab) {
-        await chrome.storage.local.remove(`tz_${tab.id}`);
+        const data = await chrome.storage.local.get(['tz_global']);
+        if (data.tz_global) {
+          // Store an explicit exclusion token so it overrides the active global scope
+          await chrome.storage.local.set({ [`tz_${tab.id}`]: 'SYSTEM' });
+        } else {
+          await chrome.storage.local.remove(`tz_${tab.id}`);
+        }
         chrome.tabs.reload(tab.id);
       }
     }
