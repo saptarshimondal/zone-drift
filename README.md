@@ -1,17 +1,17 @@
 <div id="top"></div>
 
 <!-- PROJECT SHIELDS -->
-[![Contributors](https://img.shields.io/github/contributors/saptarshimondal/ZoneDrift?style=for-the-badge)](https://github.com/saptarshimondal/zone-drift/graphs/contributors)
-[![Forks](https://img.shields.io/github/forks/saptarshimondal/ZoneDrift?style=for-the-badge)](https://github.com/saptarshimondal/zone-drift/network/members)
-[![Stargazers](https://img.shields.io/github/stars/saptarshimondal/ZoneDrift?style=for-the-badge)](https://github.com/saptarshimondal/zone-drift/stargazers)
-[![Issues](https://img.shields.io/github/issues/saptarshimondal/ZoneDrift?style=for-the-badge)](https://github.com/saptarshimondal/zone-drift/issues)
-[![MIT License](https://img.shields.io/github/license/saptarshimondal/ZoneDrift?style=for-the-badge)](https://github.com/saptarshimondal/zone-drift/blob/main/LICENSE)
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
 
 
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/saptarshimondal/ZoneDrift">
+  <a href="https://github.com/saptarshimondal/zone-drift">
     <img src="https://raw.githubusercontent.com/saptarshimondal/zone-drift/main/src/icons/icon-512.png" alt="ZoneDrift Logo" width="100" height="100">
   </a>
 
@@ -61,7 +61,7 @@ ZoneDrift is a lightweight, high-performance browser extension that allows you t
 ## Quick Start
 
 1. Install the extension (see **<a href="#installation">Installation</a>** below).
-2. Click the <img src="https://raw.githubusercontent.com/saptarshimondal/zone-drift/main/src/icons/icon-192.png" width="16" height="16" alt="Icon"> extension icon in your browser toolbar.
+2. Click the <img src="https://raw.githubusercontent.com/saptarshimondal/zone-drift/main/src/icons/icon-192.png" width="24" height="24" alt="Icon" style="vertical-align: middle"> extension icon in your browser toolbar.
 3. Search for a timezone (e.g., "Asia/Tokyo" or "Europe/London").
 4. Select the scope: **This Tab Only** or **Global**.
 5. Click **Apply & Reload Tab**.
@@ -105,14 +105,19 @@ This extension only requires minimal permissions to operate securely:
 
 ### Installation
 
-*This extension is currently available for manual installation.*
+#### Google Chrome
+1. Go to the [Releases][releases-url] page.
+2. Download the latest `zonedrift-vX.X.X-chrome.zip` release.
+3. Unzip the downloaded file.
+4. Open Google Chrome and visit the `chrome://extensions` page.
+5. Turn on **Developer mode** in the top right.
+6. Click **Load unpacked** and select the unzipped folder.
 
-1. Go to the [Releases](https://github.com/saptarshimondal/zone-drift/releases) page.
-2. Download the latest `dist.zip` release.
-3. Unzip the folder.
-4. Open your browser:
-   - **Chrome**: Go to `chrome://extensions`, enable **Developer mode**, and click **Load unpacked**. Select the `dist/chrome` folder.
-   - **Firefox**: Go to `about:debugging#/runtime/this-firefox`, click **Load Temporary Add-on…**, and select the `manifest.json` file inside the `dist/firefox` folder.
+#### Firefox
+1. Go to the [Releases][releases-url] page.
+2. Download the latest `zonedrift-vX.X.X-firefox.xpi` release.
+3. Open the downloaded `.xpi` file with Firefox (drag and drop it into a Firefox window, or open `about:addons`, click the gear icon, and select **Install Add-on From File…**).
+*(Note: If you are a developer and want to load it temporarily, you can alternatively download `zonedrift-vX.X.X-firefox.zip` and load it via `about:debugging#/runtime/this-firefox`)*
 
 ### Development Setup
 
@@ -159,7 +164,7 @@ Want to compile the project yourself? ZoneDrift uses a unified Vite build system
 - [x] Aggressive Tab Title mutation tracking
 - [ ] Add explicit settings page
 
-See the [open issues](https://github.com/saptarshimondal/zone-drift/issues) for a full list of proposed features (and known issues).
+See the [open issues][issues-url] for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -179,7 +184,7 @@ Contributions are what make the open source community such an amazing place to l
 <!-- LICENSE -->
 ## License
 
-Distributed under the ISC License. 
+Distributed under the MIT License.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -188,6 +193,20 @@ Distributed under the ISC License.
 
 Saptarshi Mondal - [@Saptarshi_77](https://twitter.com/Saptarshi_77) - mondalsaptarshi7@gmail.com
 
-Project Link: [https://github.com/saptarshimondal/zone-drift](https://github.com/saptarshimondal/zone-drift)
+Project Link: [GitHub Repo][repo-url]
 
 <p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- MARKDOWN LINKS & IMAGES -->
+[contributors-shield]: https://img.shields.io/github/contributors/saptarshimondal/zone-drift?style=for-the-badge
+[contributors-url]: https://github.com/saptarshimondal/zone-drift/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/saptarshimondal/zone-drift?style=for-the-badge
+[forks-url]: https://github.com/saptarshimondal/zone-drift/network/members
+[stars-shield]: https://img.shields.io/github/stars/saptarshimondal/zone-drift?style=for-the-badge
+[stars-url]: https://github.com/saptarshimondal/zone-drift/stargazers
+[issues-shield]: https://img.shields.io/github/issues/saptarshimondal/zone-drift?style=for-the-badge
+[issues-url]: https://github.com/saptarshimondal/zone-drift/issues
+[license-shield]: https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge
+[license-url]: https://github.com/saptarshimondal/zone-drift/blob/main/LICENSE
+[releases-url]: https://github.com/saptarshimondal/zone-drift/releases
+[repo-url]: https://github.com/saptarshimondal/zone-drift
