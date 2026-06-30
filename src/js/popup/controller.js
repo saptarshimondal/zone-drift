@@ -157,10 +157,9 @@ export class Controller {
     this.updateClock();
     
     if (this.model.isGlobalScope) {
-      await chrome.storage.local.remove('tz_global');
-      // Also remove all explicit SYSTEM overrides when global is removed
+      // Hard reset: wipe global AND every single tab override
       const allData = await chrome.storage.local.get(null);
-      const keysToRemove = Object.keys(allData).filter(k => k.startsWith('tz_') && allData[k] === 'SYSTEM');
+      const keysToRemove = Object.keys(allData).filter(k => k.startsWith('tz_'));
       if (keysToRemove.length > 0) {
         await chrome.storage.local.remove(keysToRemove);
       }
