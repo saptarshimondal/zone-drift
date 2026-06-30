@@ -1,0 +1,99 @@
+name: Build and Release
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  build_then_release:
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (
+        github.event.pull_request.merged == true &&
+        (
+          startsWith(github.event.pull_request.title, 'chore(main): release') ||
+          startsWith(github.event.pull_request.title, 'chore: release')
+        )
+      )
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout merge commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm ci
+
+      - run: npm run build
+      
+      - run: npm run pack:all
+
+      - name: Sign Firefox XPI (AMO) + stage Firefox artifacts
+        env:
+          AMO_JWT_ISSUER: ${{ secrets.AMO_JWT_ISSUER }}
+          AMO_JWT_SECRET: ${{ secrets.AMO_JWT_SECRET }}
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          TAG="v$VERSION"
+
+          mkdir -p release-assets
+
+          FIREFOX_ZIP=$(find web-ext-artifacts/firefox -name "*.zip" -type f | head -n 1)
+          cp "$FIREFOX_ZIP" "release-assets/zonedrift-${TAG}-firefox.zip"
+
+          # Sign using AMO (unlisted) - silently fail if secrets are not configured yet
+          npx web-ext sign \
+            --source-dir dist/firefox \
+            --artifacts-dir signed-firefox \
+            --channel unlisted \
+            --api-key "$AMO_JWT_ISSUER" \
+            --api-secret "$AMO_JWT_SECRET" || true
+
+          # Find the signed .xpi and rename it
+          FIREFOX_XPI=$(find signed-firefox -name "*.xpi" -type f | head -n 1)
+          if [ -f "$FIREFOX_XPI" ]; then
+            cp "$FIREFOX_XPI" "release-assets/zonedrift-${TAG}-firefox.xpi"
+          fi
+
+          ls -la release-assets
+
+      - name: Create tag + GitHub Release (release-only)
+        id: rp_release
+        uses: googleapis/release-please-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          target-branch: main
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+          skip-github-pull-request: true
+
+      - name: Upload built artifacts to the GitHub Release
+        if: ${{ steps.rp_release.outputs.release_created == 'true' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          TAG="v$VERSION"
+
+          cp web-ext-artifacts/chrome/chrome-extension.zip "release-assets/zonedrift-${TAG}-chrome.zip"
+
+          # Upload zips and xpi
+          gh release upload "$TAG" release-assets/*.zip --clobber
+          
+          # Upload XPI if it was generated
+          if ls release-assets/*.xpi 1> /dev/null 2>&1; then
+            gh release upload "$TAG" release-assets/*.xpi --clobber
+          fi

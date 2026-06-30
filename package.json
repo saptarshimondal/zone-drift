@@ -5,7 +5,10 @@
   "main": "popup.js",
   "scripts": {
     "build": "vite build",
-    "watch": "vite build --watch"
+    "watch": "vite build --watch",
+    "pack:chrome": "node scripts/pack-chrome.js",
+    "pack:firefox": "node scripts/pack-firefox.js",
+    "pack:all": "node scripts/pack-all.js"
   },
   "keywords": [],
   "author": "",
